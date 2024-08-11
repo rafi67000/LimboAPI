@@ -20,22 +20,24 @@ package net.elytrium.limboapi.injection.tablist;
 import com.velocitypowered.api.proxy.player.TabListEntry;
 import com.velocitypowered.proxy.connection.MinecraftConnection;
 import com.velocitypowered.proxy.connection.client.ConnectedPlayer;
-import com.velocitypowered.proxy.tablist.KeyedVelocityTabListEntry;
 import com.velocitypowered.proxy.tablist.VelocityTabList;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
+import com.velocitypowered.proxy.tablist.VelocityTabListEntry;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import net.elytrium.limboapi.utils.LambdaUtil;
 
 public class RewritingVelocityTabList extends VelocityTabList implements RewritingTabList {
 
-  private static final MethodHandle MH_entries;
+  private static final Function<VelocityTabList, Map<UUID, VelocityTabListEntry>> ENTRIES_GETTER;
 
   static {
     try {
-      MH_entries = MethodHandles.privateLookupIn(VelocityTabList.class, MethodHandles.lookup())
-          .findGetter(VelocityTabList.class, "entries", Map.class);
+      Field field = VelocityTabList.class.getDeclaredField("entries");
+      field.setAccessible(true);
+      ENTRIES_GETTER = LambdaUtil.getterOf(field);
     } catch (Throwable throwable) {
       throw new ExceptionInInitializerError(throwable);
     }
@@ -44,14 +46,14 @@ public class RewritingVelocityTabList extends VelocityTabList implements Rewriti
   // To keep compatibility with other plugins that use internal fields
   private final ConnectedPlayer player;
   private final MinecraftConnection connection;
-  private final Map<UUID, KeyedVelocityTabListEntry> entries;
+  private final Map<UUID, VelocityTabListEntry> entries;
 
   public RewritingVelocityTabList(ConnectedPlayer player) {
     super(player);
     try {
       this.player = player;
       this.connection = player.getConnection();
-      this.entries = (Map<UUID, KeyedVelocityTabListEntry>) MH_entries.invokeExact((VelocityTabList) this);
+      this.entries = ENTRIES_GETTER.apply(this);
     } catch (Throwable e) {
       throw new IllegalStateException(e);
     }

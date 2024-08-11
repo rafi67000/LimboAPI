@@ -349,7 +349,17 @@ public class LimboImpl implements Limbo {
   @Override
   public void spawnPlayer(Player apiPlayer, LimboSessionHandler handler) {
     if (!this.built) {
-      this.refresh();
+      List<PreparedPacket> packets = this.takeSnapshot();
+      try {
+        this.refresh();
+      } finally {
+        List<PreparedPacket> changed = this.takeSnapshot();
+        for (PreparedPacket packet : packets) {
+          if (packet != null && !changed.contains(packet)) {
+            packet.release();
+          }
+        }
+      }
     }
 
     ConnectedPlayer player = (ConnectedPlayer) apiPlayer;
@@ -728,15 +738,29 @@ public class LimboImpl implements Limbo {
     }
   }
 
+  private List<PreparedPacket> takeSnapshot() {
+    List<PreparedPacket> packets = new ArrayList<>();
+
+    packets.add(this.joinPackets);
+    packets.add(this.fastRejoinPackets);
+    packets.add(this.safeRejoinPackets);
+    packets.add(this.respawnPackets);
+    packets.add(this.firstChunks);
+    if (this.delayedChunks != null) {
+      packets.addAll(this.delayedChunks);
+    }
+    packets.add(this.configTransitionPackets);
+    packets.add(this.configPackets);
+
+    return packets;
+  }
+
   private void localDispose() {
-    this.joinPackets.release();
-    this.fastRejoinPackets.release();
-    this.safeRejoinPackets.release();
-    this.respawnPackets.release();
-    this.firstChunks.release();
-    this.delayedChunks.forEach(PreparedPacket::release);
-    this.configTransitionPackets.release();
-    this.configPackets.release();
+    this.takeSnapshot().forEach(packet -> {
+      if (packet != null) {
+        packet.release();
+      }
+    });
   }
 
   // From Velocity.
