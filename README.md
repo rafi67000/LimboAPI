@@ -1,14 +1,7 @@
 # How to get LimboAPI and PacketEvents working together?
 1. install packetevents from last Action: [here](https://github.com/rafi67000/packetevents/actions)
-2. install LimboAPI from: [here](https://github.com/rafi67000/LimboAPI/actions)
+2. install LimboAPI from last Action: [here](https://github.com/rafi67000/LimboAPI/actions)
 3. make sure `save-uncompressed-packets` is enabled in LimboAPI config. 
-
-Compiling through terminal/command prompt
-git clone https://github.com/GrimAnticheat/Grim.git (or click the green code button, download ZIP, then unzip it.)
-cd Grim
-gradlew build
-The final jar is located in build/libs
-
 
 <img src="https://elytrium.net/src/img/elytrium.webp" alt="Elytrium" align="right">
 
