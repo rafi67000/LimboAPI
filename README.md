@@ -1,7 +1,11 @@
 # How to get LimboAPI and PacketEvents working together?
 1. install packetevents from last Action: [here](https://github.com/rafi67000/packetevents/actions)
 2. install LimboAPI from last Action: [here](https://github.com/rafi67000/LimboAPI/actions)
-3. make sure `save-uncompressed-packets` is enabled in LimboAPI config. 
+3. make sure `save-uncompressed-packets` is enabled in LimboAPI config.
+
+# Using Limbo, PE, and PlHidePro
+I received `Received a command execution from a non existing player.` warning. What should I do?
+- nothing. It's not ***fully*** supported for now, but it works. Just ignore those warnings.
 
 <img src="https://elytrium.net/src/img/elytrium.webp" alt="Elytrium" align="right">
 
