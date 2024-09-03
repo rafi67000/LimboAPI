@@ -62,7 +62,7 @@ Test server: [``ely.su``](https://hotmc.ru/minecraft-server-203216)
         <dependency>
             <groupId>net.elytrium.limboapi</groupId>
             <artifactId>api</artifactId>
-            <version>1.1.25</version>
+            <version>1.1.26</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -79,7 +79,7 @@ Test server: [``ely.su``](https://hotmc.ru/minecraft-server-203216)
     }
 
     dependencies {
-        compileOnly("net.elytrium.limboapi:api:1.1.25")
+        compileOnly("net.elytrium.limboapi:api:1.1.26")
     }
 ```
 
